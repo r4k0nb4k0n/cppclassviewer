@@ -1,0 +1,92 @@
+/* 클래스 파트
+
+"class" 토큰 다음 토큰은 클래스 이름
+
+"public", "private" 토큰 다음에 오는 토큰들은 메소드 or 필드.
+
+메소드와 필드 구분은 네임을 토크나이저 구분자 "(" 로 한번 더 돌려서 토큰수가 증가하면 메소드 // ()존재
+
+//해결해야할 점 int arr[10]을 받아서 arr 과 int[]로 구분해내야함 arr[10]-> [로 토크나이저
+//-> 해결방법 : " "로 파싱. 1:"int", 2:"arr[10]" 얻음. 1번째 토큰이 Data type임을 알 수 있다. 
+//2번째 토큰(변수 이름)에서 "[]" 찾는다면 1번째 토큰에 .append("[]");. 2번째 토큰은 "["가 나타나는 곳부터 끝까지 지우고 이름만 남긴다. 
+//아래와 같이 해결해도 된다.
+
+//해당 토큰(이름 ex. bool IsEmpty() / int arr[10] / int size)을 (로 한번, [로 한번 더 토크나이저 돌려서 토큰수 증가 하면 식별가능
+//(메소드 / 배열 / 필드)
+-> 다르게 했으나 쓰기 귀찮다.
+
+*/
+
+
+/* 메소드 파트
+
+*/
+
+화면 띄우기 / 메소드 수정 기능
+--------메소드파트----------
+Saved/Writing알고리즘
+
+ClassArray형 객체 Saved 선언
+ClassArray형 객체 Writing 선언
+
+Saved = 파싱한 ClassArray;
+Writing = 파싱한 ClassArray;
+
+메소드A 소스 부분을 User가 만짐
+메소드A를 수정하다가 다른 메소드B를 확인하기위해 다른 메소드B를 클릭 -> 다음 중괄호를 수행
+{
+----------------------------------------------methodInstantSave
+Writing Array에 들어있는 ClassInfo 중에 수정하던 Method A 의 소스에 입력창에 있는 String을 매개변수로
+Writing[classNum].MethodArray[methodNum].setSource(String); // 기록저장.
+	// Saved Array에는 수정전 기록이 남아있으며, Writing Array에는 수정후 기록이 저장됨.
+---------------------------------------------- methodPrintInfo 이 파트는 Writing과 Saved 객체를 헷갈리지 않는게 중요.
+클릭했던 메소드B에 해당하는 소스를 호출하여 입력창에 띄움.
+(*GUIprint)Clicked(Wrinting).Method.getSource()
+
+클릭했던 메소드B의 사용하는 필드를 호출하여 입력창에 띄움.
+Field[] thisUsingField = Clicked(Saved).Method.getUsingField().split(); // 자세한 문법은 생까고 적음 //이거 다른 메소드로 고쳤으면 다른방법 ㄱㅊ
+(*GUIprint & multiprint)thisUsingField;
+	// 화면에 띄우는 기능. Source와 usingField를 띄움.
+}
+
+--------필드파트------
+필드클릭
+---------------------------------fieldPrintInfo
+클릭했던 필드의 이름 띄움
+(*GUIprint)Click.Field.getName()
+클릭했던 필드의 사용되는 메소드목록을 띄움
+(*GUIprint & multiprint)Click.Field.getUsingMethodList()
+
+--------클래스파트----------
+클래스 클릭
+--------------------------------classPrintInfo
+클릭했던 클래스에 정의된 메소드 목록 불러와서 Name / Type / Access순으로 출력
+MethodList m = ClickedClass.getMethodList();
+for(obj o = m) // 자세한 문법 생략
+{
+	Method k = (Method)o;
+	(*GUIprint)k.getName() / k.getType() / k.getAccess()
+}
+
+클릭했던 클래스에 정의된 필드 목록 불러와서 Name / Type / Access 순으로 출력
+FieldList f = ClickedClass.getFieldList();
+for(obj o = f) // 자세한 문법 생략
+{
+	Field k = (Field)o;
+	(*GUIprint)k.getName() / k.getType() / k.getAccess()
+}
+--------------------------------------------
+
+Save 버튼 활성화
+User 가 Save 버튼을 클릭 -> 다음 중괄호 실행
+{
+	Writing 객체에서 UsingField 와 UsingMethod 부분만 초기화/리서칭 을 수행
+	AllMethod.setUsingField("");
+	AllField.setUsingMethod("");
+	AllMethod.getSource(). (SearchForField) // 소스부분만 파싱과 같은 과정 수행, 메소드-필드 간의 연결고리 형성.
+	
+	저장된 데이터는 Saved객체에 있어야하므로 Writing객체에 있는 데이터를 옮겨준다. 
+	Saved 객체의 정보 = Writing 객체의 정보; // 그냥 이거처럼 넣으면 참조주소가 대입되니까 모든 정보를 다 옮겨줘야함.
+	
+	//만약 cpp파일 내보내기를 원한다면 total 토큰의 class에 대한 정보는 그대로, method에 대한 정보는 소스만 각 method별로 대입하여 스트링을 합친 후 내보내면 된다.
+}
